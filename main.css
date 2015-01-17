@@ -3,6 +3,6 @@ canvas {
 	margin-right: auto;
 	position: relative;
 	top: 50%;
-	transform: translateY(50%);
-	width: 35%;
+	/*transform: translateY(50%);*/
+	width: 300px;
 }
