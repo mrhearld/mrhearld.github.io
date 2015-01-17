@@ -1,6 +1,7 @@
 canvas {
-	width: 800px;
-	height: 800px;
+	border: 1px solid #000;
+	width: 380px;
+	height: 380px;
 	overflow: auto;
 	margin: auto;
 	position: absolute;
