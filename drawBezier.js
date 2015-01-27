@@ -10,13 +10,31 @@ var Path = function(){
 Path.prototype.draw = function() {
     //draw the bezier curve formed by the points in the Path
     var vectorPoints = []
+    var easyRead = []
     for (var i = 0; i < this.points.length; i++){
         vectorPoints.push(this.points[i].vec); //need the vector object from each point
+        easyRead.push(this.points[i].vec.coords());
     }
+
+    context.strokeStyle = 'red';
+    context.setLineDash([5]);
+    context.lineWidth = 1;
+    for (var i = 0; i< easyRead.length -1; i++){
+        var pt1 = easyRead[i];
+        var pt2 = easyRead[i+1]
+        context.beginPath();
+        context.moveTo(pt1[0], pt1[1]);
+        context.lineTo(pt2[0], pt2[1]);
+        context.stroke();
+    }
+
     var steps = 100;
+    context.strokeStyle = 'black';
+    context.setLineDash([0])
+    context.lineWidth = 4;
     for (var i = 0; i < steps; i++) {
         //current shit way to draw these as tight series of straight lines
-        //should really just implement 
+        //should really look into subdividing and redrawing like that.
         var t = i/steps;
         var pt1 = bezier(t, vectorPoints).coords();
         var pt2 = bezier(t+(1/steps), vectorPoints).coords();
@@ -25,18 +43,18 @@ Path.prototype.draw = function() {
         context.moveTo(pt1[0], pt1[1]);
         context.lineTo(pt2[0], pt2[1]);
         context.stroke();
-        context.strokeStyle = '#000000';
     }
+
 }
 
 
 var Point = function(x,y) {
     this.vec = new Vector(x,y);
 }
-Point.prototype.draw = function(){
+Point.prototype.draw = function(color, radius){
     context.beginPath();
-    context.arc(this.vec.coords()[0],this.vec.coords()[1], 5, 0, 2 * Math.PI, false);
-    context.fillStyle = 'blue';
+    context.arc(this.vec.coords()[0],this.vec.coords()[1], radius, 0, 2 * Math.PI, false);
+    context.fillStyle = color;
     context.fill();
 }
 
@@ -74,23 +92,21 @@ function init() {
     testPath.points.push(q);
 }
 
-function update() {
-    return;
-}
 
 function draw() {
     context.clearRect(0,0,canvas.width,canvas.height);
-    context.save();
-
+    // context.save();
     for (var i = 0; i < testPath.points.length; i++) {
-        testPath.points[i].draw();
+        if (i == 0 || i == testPath.points.length -1) {
+            testPath.points[i].draw('blue', 5);
+        } else {
+            testPath.points[i].draw('red', 2.5);
+        }
     }
-
     if (testPath.points.length > 1){
         testPath.draw();
     }
-
-    context.restore();
+    // context.restore();
 }
 
 
@@ -103,7 +119,6 @@ function main() {
     init();
 
     var loop = function () {
-        update();
         draw();
 
         window.requestAnimationFrame(loop, canvas);
