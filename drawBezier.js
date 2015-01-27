@@ -6,18 +6,20 @@ var context = canvas.getContext('2d');
 var Path = function(){
     //an object to store a series of Point objects.
     this.points = [];
-};
+}
 Path.prototype.draw = function() {
     //draw the bezier curve formed by the points in the Path
     var vectorPoints = []
     for (var i = 0; i < this.points.length; i++){
         vectorPoints.push(this.points[i].vec); //need the vector object from each point
     }
-    for (var t = 0; t < 1.00; t += 0.001) {
+    var steps = 100;
+    for (var i = 0; i < steps; i++) {
         //current shit way to draw these as tight series of straight lines
         //should really just implement 
+        var t = i/steps;
         var pt1 = bezier(t, vectorPoints).coords();
-        var pt2 = bezier(t+0.01, vectorPoints).coords();
+        var pt2 = bezier(t+(1/steps), vectorPoints).coords();
 
         context.beginPath();
         context.moveTo(pt1[0], pt1[1]);
@@ -62,7 +64,14 @@ var clearCanvas = function() {
 }
 
 function init() {
-    return;
+    var p = new Point(10,390);
+    var r = new Point(10,10);
+    var s = new Point(590,10);
+    var q = new Point(590,390);
+    testPath.points.push(p);
+    testPath.points.push(r);
+    testPath.points.push(s);
+    testPath.points.push(q);
 }
 
 function update() {
